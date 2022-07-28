@@ -5,11 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Cep extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
-        'name', 'sku', 'price', 'quantity'
+        'cep', 'rua', 'bairro', 'cidade', 'uf'
     ];
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
 }

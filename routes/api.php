@@ -2,8 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,18 +25,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-Route::post('login', [ApiController::class, 'authenticate']);
-Route::post('register', [ApiController::class, 'register']);
+Route::post('login', [UsersController::class, 'authenticate']);
+Route::post('register', [UsersController::class, 'register']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
-    Route::get('teste', function () {
-        dd("Olaaaa! \o");
-    });
-    Route::get('logout', [ApiController::class, 'logout']);
-    Route::get('get_user', [ApiController::class, 'get_user']);
+    Route::get('logout', [UsersController::class, 'logout']);
+    Route::get('get_user', [UsersController::class, 'get_user']);
     Route::get('products', [ProductController::class, 'index']);
     Route::get('products/{id}', [ProductController::class, 'show']);
     Route::post('create', [ProductController::class, 'store']);
     Route::put('update/{product}',  [ProductController::class, 'update']);
     Route::delete('delete/{product}',  [ProductController::class, 'destroy']);
+
+    // ADDRESSES
+    Route::get('addresses', [AddressController::class, 'index']);
+    Route::post('addresses', [AddressController::class, 'store']);
+    Route::get('addresses/{id}', [AddressController::class, 'show']);
+    Route::put('addresses/{address}',  [AddressController::class, 'update']);
+    Route::delete('addresses/{address}',  [AddressController::class, 'destroy']);
+
 });
