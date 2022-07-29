@@ -9,6 +9,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\UsersService;
 use App\Models\User;
+use App\Http\Requests\CreateUserPostRequest;
+use App\Http\Requests\AuthenticateUserPostRequest;
+use App\Http\Requests\LogoutUserPostRequest;
 
 class UsersController extends Controller
 {
@@ -17,22 +20,8 @@ class UsersController extends Controller
         $this->usersService = $usersService;
     }
 
-    public function register(Request $request)
+    public function register(CreateUserPostRequest $request)
     {
-        $data = $request->only('name', 'email', 'password');
-        $validator = Validator::make($data, [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|max:50'
-        ]);
-
-        if($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->messages()
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $user = User::create([
         	'name' => $request->name,
         	'email' => $request->email,
@@ -46,51 +35,23 @@ class UsersController extends Controller
         ], Response::HTTP_OK);
     }
  
-    public function authenticate(Request $request)
+    public function authenticate(AuthenticateUserPostRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        $validator = Validator::make($credentials, [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6|max:50'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'error' => $validator->messages()
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $response = $this->usersService->createJwtToken($credentials);
+        $response = $this->usersService->createJwtToken($request->only('email', 'password'));
 
         return response()->json($response['result'], $response['http_code']);
         
     }
  
-    public function logout(Request $request)
-    {
-        $validator = Validator::make($request->only('token'), [
-            'token' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->messages()
-            ], Response::HTTP_BAD_REQUEST);
-        }
-       
+    public function logout(LogoutUserPostRequest $request)
+    {       
         $response = $this->usersService->invalidateJwtToken($request->token);
 
         return response()->json($response['result'], $response['http_code']);
     }
  
-    public function get_user(Request $request)
-    {
-        $this->validate($request, [
-            'token' => 'required'
-        ]);
- 
+    public function get_user(GetUserPostRequest $request)
+    { 
         $user = JWTAuth::authenticate($request->token);
  
         return response()->json(['user' => $user]);
