@@ -18,11 +18,8 @@ class AddressController extends Controller
 {
     use PrepareResponseTrait;
 
-    protected $user;
-
     public function __construct(AddressesService $addressesService)
     {
-        $this->user = JWTAuth::parseToken()->authenticate();
         $this->addressesService = $addressesService;
     }
 
@@ -33,7 +30,7 @@ class AddressController extends Controller
         return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }
 
-    public function store(StoreAddressPostRequest $request): JsonResponse
+    public function store(StoreAddressPostRequest $request) : JsonResponse
     {
         $data = $request->only('cep', 'numero', 'ponto_referencia');
 
@@ -42,14 +39,14 @@ class AddressController extends Controller
         return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }
 
-    public function show($id)
+    public function show($id) : JsonResponse
     {
         $result = $this->addressesService->get($id);
 
         return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }
 
-    public function update(UpdateAddressPostRequest $request, Address $address)
+    public function update(UpdateAddressPostRequest $request, Address $address)  : JsonResponse
     {
         $data = $request->only('cep', 'numero', 'ponto_referencia');
         $result = $this->addressesService->update($data, $address);
@@ -57,7 +54,7 @@ class AddressController extends Controller
         return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }
 
-    public function destroy(Address $address)
+    public function destroy(Address $address)  : JsonResponse
     {
         $address->delete();
         

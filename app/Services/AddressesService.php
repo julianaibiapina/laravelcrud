@@ -35,23 +35,6 @@ class AddressesService
         
     }
 
-    private function returnListAddressesWithCEP(Collection $addresses) : array
-    {
-        $result = array ();
-        foreach ($addresses as $address) {
-            $result[] = $this->returnAddressWithCEP($address);
-        }
-
-        return $result;
-    }
-
-    private function returnAddressWithCEP(Address $address) : array
-    {
-        $result = $address->toArray();
-        $result['cep'] = $address->cep->toArray();
-        return $result;
-    }
-
     public function get($id) : array
     {
         $address = Auth::user()->addresses()->find($id);
@@ -149,6 +132,23 @@ class AddressesService
             'cep' => $cep
         ];
         
+    }
+
+    private function returnListAddressesWithCEP(Collection $addresses) : array
+    {
+        $result = array ();
+        foreach ($addresses as $address) {
+            $result[] = $this->returnAddressWithCEP($address);
+        }
+
+        return $result;
+    }
+
+    private function returnAddressWithCEP(Address $address) : array
+    {
+        $result = $address->toArray();
+        $result['cep'] = $address->cep->toArray();
+        return $result;
     }
 }
 
