@@ -8,52 +8,43 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\UsersService;
+use App\Repositories\UsersRepository;
 use App\Models\User;
 use App\Http\Requests\CreateUserPostRequest;
 use App\Http\Requests\AuthenticateUserPostRequest;
 use App\Http\Requests\LogoutUserPostRequest;
+use App\Traits\PrepareResponseTrait;
+use Illuminate\Http\JsonResponse;
 
 class UsersController extends Controller
 {
-    public function __construct(UsersService $usersService)
+    use PrepareResponseTrait;
+
+    public function __construct(UsersService $usersService, UsersRepository $usersRepository)
     {
+        $this->usersRepository = $usersRepository;
         $this->usersService = $usersService;
     }
 
-    public function register(CreateUserPostRequest $request)
+    public function register(CreateUserPostRequest $request) : JsonResponse
     {
-        $user = User::create([
-        	'name' => $request->name,
-        	'email' => $request->email,
-        	'password' => bcrypt($request->password)
-        ]);
+        $result = $this->usersService->create($request->only('name', 'email', 'password'));
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User created successfully',
-            'data' => $user
-        ], Response::HTTP_OK);
+        return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }
  
-    public function authenticate(AuthenticateUserPostRequest $request)
+    public function authenticate(AuthenticateUserPostRequest $request) : JsonResponse
     {
-        $response = $this->usersService->createJwtToken($request->only('email', 'password'));
+        $result = $this->usersService->createJwtToken($request->only('email', 'password'));
 
-        return response()->json($response['result'], $response['http_code']);
+        return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
         
     }
  
-    public function logout(LogoutUserPostRequest $request)
+    public function logout(LogoutUserPostRequest $request) : JsonResponse
     {       
-        $response = $this->usersService->invalidateJwtToken($request->token);
+        $result = $this->usersService->invalidateJwtToken($request->token);
 
-        return response()->json($response['result'], $response['http_code']);
-    }
- 
-    public function get_user(GetUserPostRequest $request)
-    { 
-        $user = JWTAuth::authenticate($request->token);
- 
-        return response()->json(['user' => $user]);
+        return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }
 }

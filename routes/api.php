@@ -22,7 +22,6 @@ Route::post('register', [UsersController::class, 'register']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('logout', [UsersController::class, 'logout']);
-    Route::get('get_user', [UsersController::class, 'get_user']);
 
     Route::get('addresses', [AddressController::class, 'index']);
     Route::post('addresses', [AddressController::class, 'store']);
