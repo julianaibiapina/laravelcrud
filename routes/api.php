@@ -17,11 +17,11 @@ use App\Http\Controllers\AddressController;
 |
 */
 
-Route::post('login', [UsersController::class, 'authenticate']);
-Route::post('register', [UsersController::class, 'register']);
+Route::post('auth/login', [UsersController::class, 'authenticate']);
+Route::post('auth/register', [UsersController::class, 'register']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
-    Route::get('logout', [UsersController::class, 'logout']);
+    Route::get('auth/logout', [UsersController::class, 'logout']);
 
     Route::get('addresses', [AddressController::class, 'index']);
     Route::post('addresses', [AddressController::class, 'store']);

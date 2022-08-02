@@ -9,7 +9,6 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\UsersService;
 use App\Repositories\UsersRepository;
-use App\Models\User;
 use App\Http\Requests\CreateUserPostRequest;
 use App\Http\Requests\AuthenticateUserPostRequest;
 use App\Http\Requests\LogoutUserPostRequest;
