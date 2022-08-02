@@ -1,5 +1,13 @@
 # Instalação
 
+> PHP 8.0.21
+> 
+
+> Laravel 8
+> 
+
+> MySql 14.14
+> 
 - Instalar as dependências do projeto
     
     ```bash
@@ -364,3 +372,11 @@ Response
     "message": "Address deleted successfully"
 }
 ```
+
+# Tópicos e conceitos aplicados
+
+- Repository pattern
+- Service layer
+- Clean Code
+- Traits do PHP
+- JWT Authentication
