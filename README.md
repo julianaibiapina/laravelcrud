@@ -1,11 +1,52 @@
-# API ADDRESSES
+# Instalação
 
+- Instalar as dependências do projeto
+    
+    ```bash
+    composer install
+    ```
+    
+- Criar o arquivo .env
+    
+    ```bash
+    cp .env.example .env
+    ```
+    
+- Preencher as variáveis de ambiente do banco de dados
+    
+    ```bash
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=laravel
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+    
+- Criar a variável de ambiente com a URL do serviço de busca de CEP
+    
+    ```json
+    CEP_SERVICE_URL=https://viacep.com.br/ws/CEP/json/
+    ```
+    
+- Gerar a key para o JWT
+    
+    ```bash
+    php artisan jwt:secret
+    ```
+    
+- Criar a variável de ambiente JWT_SECRET e atribuir a key gerada no passo anterior
+    
+    ```bash
+    JWT_SECRET={JWT_KEY}
+    ```
+    
 
 # Endpoints Disponíveis
 
 URL base da API
 
-[http://localhost/api](http://localhost:8000/api/v1)
+[http://localhost/{project_name}/public/api](http://localhost:8000/api/v1)
 
 ## Auth
 
@@ -233,27 +274,25 @@ Response
 {
     "success": true,
     "data": {
-        "addresses": [
-            {
+        "address": {
+            "id": 11,
+            "user_id": 13,
+            "numero": "1247",
+            "ponto_referencia": "Avenida principal da cidade",
+            "created_at": "2022-08-02T00:06:46.000000Z",
+            "updated_at": "2022-08-02T00:06:46.000000Z",
+            "cep_id": 1,
+            "cep": {
                 "id": 1,
-                "user_id": 13,
-                "numero": "1247",
-                "ponto_referencia": "Avenida principal da cidade",
-                "created_at": "2022-08-01T01:57:26.000000Z",
-                "updated_at": "2022-08-01T01:58:22.000000Z",
-                "cep_id": 4,
-                "cep": {
-                    "id": 1,
-		                "cep": "62320069",
-		                "rua": "Avenida Prefeito Jacques Nunes",
-		                "bairro": "Centro",
-		                "cidade": "Tiangua",
-		                "uf": "CE",
-		                "created_at": "2022-07-27T18:42:48.000000Z",
-		                "updated_at": "2022-07-27T18:42:48.000000Z"
-                }
-            },
-        ]
+                "cep": "62320069",
+                "rua": "Avenida Prefeito Jacques Nunes",
+                "bairro": "Centro",
+                "cidade": "Tiangua",
+                "uf": "CE",
+                "created_at": "2022-07-27T18:42:48.000000Z",
+                "updated_at": "2022-07-27T18:42:48.000000Z"
+            }
+        }
     },
     "message": "OK"
 }
