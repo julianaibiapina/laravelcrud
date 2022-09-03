@@ -21,7 +21,7 @@ class AddressesService
         $this->cepsService = $cepsService;
     }
 
-    public function list() : array
+    public function list(): array
     {
         $addresses = Auth::user()->addresses;
         return [
@@ -35,7 +35,7 @@ class AddressesService
         
     }
 
-    public function get($id) : array
+    public function get($id): array
     {
         $address = Auth::user()->addresses()->find($id);
 
@@ -58,7 +58,7 @@ class AddressesService
         ];
     }
 
-    public function update(array $data, Address $address)  : array
+    public function update(array $data, Address $address): array
     {
         $result = $address->update($data);
 
@@ -78,7 +78,7 @@ class AddressesService
             'http_code' => Response::HTTP_OK
         ];
     }
-    public function create(array $data) : array
+    public function create(array $data): array
     {
         $cep = $this->getCep($data['cep']);
 
@@ -103,11 +103,11 @@ class AddressesService
             'data' => [
                 'endereco' => $endereco
             ],
-            'http_code' => Response::HTTP_OK
+            'http_code' => Response::HTTP_CREATED
         ];
     }
 
-    private function getCep(string $cep_number) : array
+    private function getCep(string $cep_number): array
     {
         $cep = $this->cepsRepository->find('cep', $cep_number);
 
@@ -134,7 +134,7 @@ class AddressesService
         
     }
 
-    private function returnListAddressesWithCEP(Collection $addresses) : array
+    private function returnListAddressesWithCEP(Collection $addresses): array
     {
         $result = array ();
         foreach ($addresses as $address) {
@@ -144,7 +144,7 @@ class AddressesService
         return $result;
     }
 
-    private function returnAddressWithCEP(Address $address) : array
+    private function returnAddressWithCEP(Address $address): array
     {
         $result = $address->toArray();
         $result['cep'] = $address->cep->toArray();

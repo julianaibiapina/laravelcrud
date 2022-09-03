@@ -5,20 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cep extends Model
+class Wallet extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'cep',
-        'rua',
-        'bairro',
-        'cidade',
-        'uf'
+        'user_id',
+        'amount'
     ];
 
-    public function addresses()
+    public function user()
     {
-        return $this->hasMany(Address::class);
+        return $this->belongsTo(User::class);
     }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\TransactionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +29,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('addresses/{id}', [AddressController::class, 'show']);
     Route::put('addresses/{address}',  [AddressController::class, 'update']);
     Route::delete('addresses/{address}',  [AddressController::class, 'destroy']);
+
+    Route::post('transaction', [TransactionsController::class, 'store']);
 
 });

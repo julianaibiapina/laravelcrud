@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AddressesService;
-use App\Models\Address;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\StoreAddressPostRequest;
 use App\Http\Requests\UpdateAddressPostRequest;
-use Illuminate\Http\JsonResponse;
+use App\Services\AddressesService;
+use App\Models\Address;
 use App\Traits\PrepareResponseTrait;
 use JWTAuth;
 

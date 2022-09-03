@@ -27,7 +27,7 @@ class UsersController extends Controller
 
     public function register(CreateUserPostRequest $request) : JsonResponse
     {
-        $result = $this->usersService->create($request->only('name', 'email', 'password'));
+        $result = $this->usersService->create($request->all());
 
         return $this->prepareResponse($result['data'], $result['message'], $result['http_code']);
     }

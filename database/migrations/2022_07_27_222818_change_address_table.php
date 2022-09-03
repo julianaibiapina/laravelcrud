@@ -26,6 +26,9 @@ class ChangeAddressTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->dropForeign(['cep_id']);
+            $table->dropColumn('cep_id');
+        });
     }
 }

@@ -8,11 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CepsService
 {
-    public function __construct()
-    {
-
-    }
-
     public function getDadosCep(string $cep) : array
     {
         $url = str_replace('CEP', $cep, env('CEP_SERVICE_URL'));

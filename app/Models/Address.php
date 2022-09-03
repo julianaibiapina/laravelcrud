@@ -11,7 +11,9 @@ class Address extends Model
     use HasFactory;
 
     protected $fillable = [
-        'cep_id', 'numero', 'ponto_referencia',
+        'cep_id',
+        'numero',
+        'ponto_referencia',
     ];
 
     public function cep()
