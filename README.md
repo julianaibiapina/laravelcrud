@@ -81,7 +81,7 @@ Body
 ```json
 {
     "name": "Usuario Exemplo",
-		"identifier": "73277003078",
+	"identifier": "73277003078",
     "email": "exemplo@email.com",
     "password": "123456",
 		"type_id" : 1
