@@ -1,6 +1,6 @@
 # Instalação
 
-> PHP 8.0.21
+> PHP 8.1.9
 > 
 
 > Laravel 8
@@ -49,6 +49,18 @@
     JWT_SECRET={JWT_KEY}
     ```
     
+- Criar o banco de dados por meio das migrations
+    
+    ```bash
+    php artisan migrate
+    ```
+    
+- Inserir os dados iniciais com os seeders
+    
+    ```bash
+    php artisan db:seed
+    ```
+    
 
 # Endpoints Disponíveis
 
@@ -68,9 +80,11 @@ Body
 
 ```json
 {
-    "name": "Usuario",
-    "email": "usuario@email.com",
-    "password": "123456"
+    "name": "Usuario Exemplo",
+		"identifier": "73277003078",
+    "email": "exemplo@email.com",
+    "password": "123456",
+		"type_id" : 1
 }
 ```
 
@@ -81,11 +95,13 @@ Response
     "success": true,
     "data": {
         "user": {
-            "name": "Usuario",
-            "email": "usuario@email.com",
-            "updated_at": "2022-08-02T00:22:33.000000Z",
-            "created_at": "2022-08-02T00:22:33.000000Z",
-            "id": 13
+            "name": "Usuário Exemplo",
+            "email": "exemplo@email.com",
+            "identifier": "73277003078",
+            "type_id": 1,
+            "updated_at": "2022-09-06T01:12:22.000000Z",
+            "created_at": "2022-09-06T01:12:22.000000Z",
+            "id": 9
         }
     },
     "message": "User created successfully"
@@ -140,6 +156,43 @@ Response
     "success": true,
     "data": [],
     "message": "User has been logged out"
+}
+```
+
+## Transactions
+
+### [POST] Store
+
+```bash
+/transaction
+```
+
+Headers
+
+```json
+{
+  "Authorization": "Bearer {TOKEN}",
+  "Content-Type": "application/json"
+}
+```
+
+Body
+
+```json
+{
+    "value": 1000,
+    "payer_id": 6,
+    "payee_id": 8
+}
+```
+
+Response
+
+```json
+{
+    "success": true,
+    "data": [],
+    "message": "Transaction performed successfully."
 }
 ```
 
@@ -372,11 +425,3 @@ Response
     "message": "Address deleted successfully"
 }
 ```
-
-# Tópicos e conceitos aplicados
-
-- Repository pattern
-- Service layer
-- Clean Code
-- Traits do PHP
-- JWT Authentication
