@@ -60,6 +60,7 @@
     ```bash
     php artisan db:seed
     ```
+- Dados de valores monetários sao persistidos e tratados como inteiro. Esta representação com inteiros foi escolhida devido às limitações do range de valores de tipos decimais, o tipo inteiro suporta um range de valores bem maior. Tais dados devem ser tratados no front-end a fim de que sejam adicionadas duas casas decimais.
     
 
 # Endpoints Disponíveis
@@ -81,7 +82,7 @@ Body
 ```json
 {
     "name": "Usuario Exemplo",
-	"identifier": "73277003078",
+    "identifier": "73277003078",
     "email": "exemplo@email.com",
     "password": "123456",
 		"type_id" : 1
