@@ -5,7 +5,6 @@ namespace App\Services;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\DB;
 use App\Repositories\UsersRepository;
 use App\Repositories\WalletRepository;
 use App\Models\User;
@@ -18,7 +17,7 @@ class UsersService
         $this->walletRepository = $walletRepository;
     }
 
-    public function createJwtToken(array $credentials) : array
+    public function createJwtToken(array $credentials): array
     {
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
@@ -49,7 +48,7 @@ class UsersService
         ];
     }
 
-    public function invalidateJwtToken(string $token) : array
+    public function invalidateJwtToken(string $token): array
     {
         try {
             JWTAuth::invalidate($token);
@@ -70,7 +69,7 @@ class UsersService
         }
     }
 
-    public function create(array $data) : array
+    public function create(array $data): array
     {
         $user = $this->usersRepository->create($data);
         $wallet = $this->walletRepository->create([

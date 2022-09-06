@@ -4,34 +4,104 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Repositories\UsersRepository;
+use App\Repositories\TransactionRepository;
+use App\Services\UsersService;
+use App\Services\WalletService;
+use App\Models\User;
 
 class TransactionsService
 {
-    public function __construct()
+    public function __construct(UsersRepository $usersRepository, UsersService $usersService, TransactionRepository $transactionRepository, WalletService $walletService)
     {
+        $this->usersRepository = $usersRepository;
+        $this->transactionRepository = $transactionRepository;
+        $this->usersService = $usersService;
+        $this->walletService = $walletService;
     }
 
     public function create(array $data): array
     {
-        // validar de o payeer tem saldo disponicel no valor da transferencia
+        $can_operate = $this->canRealizeTransaction($data['payer_id'], $data['value']);
+        if($can_operate['success']){
+            DB::transaction(function () use ($data) {
+                
+                $this->transactionRepository->create([
+                    'value' => $data['value'],
+                    'payer_id' => $data['payer_id'],
+                    'payee_id' => $data['payee_id']
+                ]);
 
-        {
-            //bloco de DB::transaction
+                $this->walletService->subValue($data['payer_id'], $data['value']);
 
-            // fazer transferencia
-
-            // antes de realmente finalizar, verificar o servico autorizador externo
-            // https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6
+                $this->walletService->addValue($data['payee_id'], $data['value']);
+            });
             
-            // em caso se sucesso na transacao, deve ser enviado uma notificacao ao usuario que recebeu dinheiro, criar uma fila de envio de email, pq se nao deu certo enviar devido ao servico terceiro, vai ser reprocessado na fila de envio
+            /**
+             * Enviar notificacao ao usuario:
+             * Criar entidade Notifications, que deve informar o user_id, a mensagem a ser enviada, e o status.
+             * Criar um Command, que executa periodicamente o qual lista Notifications com status de erro e reenvia.
+             * Pode haver um limite de tentativas para nao acontecer de uma Notifications ficar sempre na fila.
+             */
+
+            return [
+                'success' => true,
+                'message' => "Operation performed successfully.",
+                'data' => [],
+                'http_code' => Response::HTTP_OK
+            ];
         }
 
         
         return [
-            'success' => true,
-            'message' => 'OK',
+            'success' => false,
+            'message' => $can_operate['message'],
             'data' => [],
-            'http_code' => Response::HTTP_CREATED
+            'http_code' => Response::HTTP_FORBIDDEN
         ];
     }
+
+    private function externalAuthorizingServiceResponse(): bool
+    {
+        $url = env('EXTERNAL_AUTHORIZING_SERVICE');
+        $response = Http::get($url);
+
+        return $response->status() == Response::HTTP_OK;
+    }
+
+    private function canRealizeTransaction(int $payer_id, int $transaction_value): array
+    {
+        if(Auth::user()->id != $payer_id) {
+            return [
+                'success' => false,
+                'message' => 'Only the account owner can make transfers.',
+            ];
+        };
+
+        if(!$this->hasBalance(Auth::user(), $transaction_value)) {
+            return [
+                'success' => false,
+                'message' => 'The user does not have sufficient account balance to complete the transaction.',
+            ];
+        }
+
+        if(!$this->externalAuthorizingServiceResponse()) {
+            return [
+                'success' => false,
+                'message' => 'The external authorization service denied the request.',
+            ];
+        }
+
+        return [
+            'success' => true
+        ];
+    }
+
+    private function hasBalance(User $user, int $transaction_value): bool
+    {
+        return $user->wallet->amount >= $transaction_value;
+    }
+
 }

@@ -16,4 +16,9 @@ class UsersRepository
             'type_id'    => $data['type_id']
         ]);
     }
+
+    public function find(int $id)
+    {
+        return User::find($id);
+    }
 }
